@@ -72,6 +72,7 @@ add_library(robot_controllers
   src/pid.cpp
   src/point_head.cpp
   src/scaled_mimic.cpp
+  src/torque_joint_trajectory.cpp
 )
 target_link_libraries(robot_controllers
   ${catkin_LIBRARIES}

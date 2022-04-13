@@ -1,0 +1,3 @@
+<launch>
+    <node pkg="robot_controllers_interface" type="stop_controller.py" args="arm_controller/gravity_compensation robot_controllers/GravityCompensation" name="stop_gravity_compensation" />
+</launch>

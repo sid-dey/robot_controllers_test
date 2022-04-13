@@ -12,6 +12,12 @@
     <description>Follow Joint Trajectory Action</description>
   </class>
 
+  <class name="robot_controllers/TorqueJointTrajectoryController"
+         type="robot_controllers::TorqueJointTrajectoryController"
+         base_class_type="robot_controllers::Controller">
+    <description>Torque Joint Trajectory Action</description>
+  </class>
+
   <class name="robot_controllers/PointHeadController"
          type="robot_controllers::PointHeadController"
          base_class_type="robot_controllers::Controller">

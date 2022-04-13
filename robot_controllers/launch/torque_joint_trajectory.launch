@@ -1,0 +1,9 @@
+<launch>
+    <rosparam file="$(find robot_controllers)/config/test_controllers.yaml" command="load"/> <!--load in custom controller config-->
+    
+    <node pkg="robot_controllers_interface" type="stop_controller.py" args="arm_controller/follow_joint_trajectory robot_controllers/FollowJointTrajectoryController" name="stop_arm_controller" />    
+    <node pkg="robot_controllers_interface" type="start_controller.py" args="arm_controller/torque_joint_trajectory robot_controllers/TorqueJointTrajectoryController" name="start_torque_controller"/>     
+    
+    <node pkg="fetch_roahm" type="fetch_planning_interface_traj_sim.py" args="arm_controller/torque_joint_trajectory" name="fetch_planning_interface"/>
+
+</launch>

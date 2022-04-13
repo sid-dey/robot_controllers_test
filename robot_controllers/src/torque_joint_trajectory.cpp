@@ -304,7 +304,14 @@ void TorqueJointTrajectoryController::update(const ros::Time& now, const ros::Du
       }
 
       ROS_INFO_STREAM("Sending hardcoded torque values to test setEffort!");
-      std::vector<double> hardcoded_torques{2.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+      std::vector<double> hardcoded_torques;
+      hardcoded_torques.push_back(0.0);
+      hardcoded_torques.push_back(0.0);
+      hardcoded_torques.push_back(0.0);
+      hardcoded_torques.push_back(0.0);
+      hardcoded_torques.push_back(0.0);
+      hardcoded_torques.push_back(0.0);
+      hardcoded_torques.push_back(1.0);
 
       // Update joints
       for (size_t j = 0; j < joints_.size(); ++j)

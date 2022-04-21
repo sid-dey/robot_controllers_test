@@ -304,24 +304,32 @@ void TorqueJointTrajectoryController::update(const ros::Time& now, const ros::Du
       }
 
       ROS_INFO_STREAM("Sending hardcoded torque values to test setEffort!");
-      std::vector<double> hardcoded_torques;
-      hardcoded_torques.push_back(0.0);
-      hardcoded_torques.push_back(0.0);
-      hardcoded_torques.push_back(0.0);
-      hardcoded_torques.push_back(0.0);
-      hardcoded_torques.push_back(0.0);
-      hardcoded_torques.push_back(1.0);
-      hardcoded_torques.push_back(0.0);
+      // std::vector<double> hardcoded_torques;
+      // hardcoded_torques.push_back(0.0);
+      // hardcoded_torques.push_back(0.0);
+      // hardcoded_torques.push_back(0.0);
+      // hardcoded_torques.push_back(0.0);
+      // hardcoded_torques.push_back(0.0);
+      // hardcoded_torques.push_back(1.0);
+      // hardcoded_torques.push_back(0.0);
 
-      // Update joints
-      for (size_t j = 0; j < joints_.size(); ++j)
-      {
-        // joints_[j]->setPosition(feedback_.desired.positions[j],
-        //                         feedback_.desired.velocities[j],
-        //                         0.0);
+      joints_[0]->setEffort(hardcoded_torques[0.0]);
+      joints_[1]->setEffort(hardcoded_torques[0.0]);
+      joints_[2]->setEffort(hardcoded_torques[-1.0]);
+      joints_[3]->setEffort(hardcoded_torques[0.0]);
+      joints_[4]->setEffort(hardcoded_torques[0.0]);
+      joints_[5]->setEffort(hardcoded_torques[1.0]);
+      joints_[6]->setEffort(hardcoded_torques[0.0]);
+
+      // // Update joints
+      // for (size_t j = 0; j < joints_.size(); ++j)
+      // {
+      //   // joints_[j]->setPosition(feedback_.desired.positions[j],
+      //   //                         feedback_.desired.velocities[j],
+      //   //                         0.0);
         
-        joints_[j]->setEffort(hardcoded_torques[j]);
-      }
+      //   joints_[j]->setEffort(hardcoded_torques[j]);
+      // }
     }
   }
   else if (last_sample_.q.size() == joints_.size())

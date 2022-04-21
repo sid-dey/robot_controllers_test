@@ -73,8 +73,8 @@ bellows_controller:
   mimic_scale: 0.5
   autostart: true
 
-fetch_driver:
-  default_controllers:
+robot_driver:
+  test_controllers:
     - "arm_controller/follow_joint_trajectory"
     - "arm_controller/gravity_compensation"
     - "arm_with_torso_controller/follow_joint_trajectory"

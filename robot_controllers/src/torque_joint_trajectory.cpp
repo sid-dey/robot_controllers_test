@@ -313,13 +313,13 @@ void TorqueJointTrajectoryController::update(const ros::Time& now, const ros::Du
       // hardcoded_torques.push_back(1.0);
       // hardcoded_torques.push_back(0.0);
 
-      joints_[0]->setEffort(hardcoded_torques[0.0]);
-      joints_[1]->setEffort(hardcoded_torques[0.0]);
-      joints_[2]->setEffort(hardcoded_torques[-1.0]);
-      joints_[3]->setEffort(hardcoded_torques[0.0]);
-      joints_[4]->setEffort(hardcoded_torques[0.0]);
-      joints_[5]->setEffort(hardcoded_torques[1.0]);
-      joints_[6]->setEffort(hardcoded_torques[0.0]);
+      joints_[0]->setEffort(0.0);
+      joints_[1]->setEffort(0.0);
+      joints_[2]->setEffort(-1.0);
+      joints_[3]->setEffort(0.0);
+      joints_[4]->setEffort(0.0);
+      joints_[5]->setEffort(1.0);
+      joints_[6]->setEffort(0.0);
 
       // // Update joints
       // for (size_t j = 0; j < joints_.size(); ++j)

@@ -142,12 +142,12 @@ bool FollowJointTrajectoryController::start()
     return false;
   }
 
-  if (!server_->isActive())
-  {
-    ROS_ERROR_NAMED("FollowJointTrajectoryController",
-                    "Unable to start, action server is not active.");
-    return false;
-  }
+  // if (!server_->isActive())
+  // {
+  //   ROS_ERROR_NAMED("FollowJointTrajectoryController",
+  //                   "Unable to start, action server is not active.");
+  //   return false;
+  // }
 
   return true;
 }

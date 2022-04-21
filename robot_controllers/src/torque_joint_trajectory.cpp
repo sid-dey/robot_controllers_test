@@ -142,12 +142,12 @@ bool TorqueJointTrajectoryController::start()
     return false;
   }
 
-  if (!server_->isActive())
-  {
-    ROS_ERROR_NAMED("TorqueJointTrajectoryController",
-                    "Unable to start, action server is not active.");
-    return false;
-  }
+  // if (!server_->isActive())
+  // {
+  //   ROS_ERROR_NAMED("TorqueJointTrajectoryController",
+  //                   "Unable to start, action server is not active.");
+  //   return false;
+  // }
 
   return true;
 }
@@ -310,8 +310,8 @@ void TorqueJointTrajectoryController::update(const ros::Time& now, const ros::Du
       hardcoded_torques.push_back(0.0);
       hardcoded_torques.push_back(0.0);
       hardcoded_torques.push_back(0.0);
-      hardcoded_torques.push_back(0.0);
       hardcoded_torques.push_back(1.0);
+      hardcoded_torques.push_back(0.0);
 
       // Update joints
       for (size_t j = 0; j < joints_.size(); ++j)

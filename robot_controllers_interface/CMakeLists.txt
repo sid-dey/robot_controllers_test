@@ -61,6 +61,7 @@ install(
     scripts/get_controller_state.py
     scripts/start_controller.py
     scripts/stop_controller.py
+    scripts/fetch_planning_interface.py
   DESTINATION
     ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

@@ -36,21 +36,21 @@
 /* Author: Michael Ferguson */
 
 #include <pluginlib/class_list_macros.hpp>
-#include <robot_controllers/follow_joint_trajectory.h>
+#include <robot_controllers/torque_joint_trajectory.h>
 
 using angles::shortest_angular_distance;
 
-PLUGINLIB_EXPORT_CLASS(robot_controllers::FollowJointTrajectoryController, robot_controllers::Controller)
+PLUGINLIB_EXPORT_CLASS(robot_controllers::TorqueJointTrajectoryController, robot_controllers::Controller)
 
 namespace robot_controllers
 {
 
-FollowJointTrajectoryController::FollowJointTrajectoryController() :
+TorqueJointTrajectoryController::TorqueJointTrajectoryController() :
     initialized_(false)
 {
 }
 
-int FollowJointTrajectoryController::init(ros::NodeHandle& nh, ControllerManager* manager)
+int TorqueJointTrajectoryController::init(ros::NodeHandle& nh, ControllerManager* manager)
 {
   // We absolutely need access to the controller manager
   if (!manager)
@@ -125,26 +125,27 @@ int FollowJointTrajectoryController::init(ros::NodeHandle& nh, ControllerManager
 
   // Setup ROS interfaces
   server_.reset(new server_t(nh, "",
-                             boost::bind(&FollowJointTrajectoryController::executeCb, this, _1),
+                             boost::bind(&TorqueJointTrajectoryController::executeCb, this, _1),
                              false));
   server_->start();
 
   initialized_ = true;
+
   return 0;
 }
 
-bool FollowJointTrajectoryController::start()
+bool TorqueJointTrajectoryController::start()
 {
   if (!initialized_)
   {
-    ROS_ERROR_NAMED("FollowJointTrajectoryController",
+    ROS_ERROR_NAMED("TorqueJointTrajectoryController",
                     "Unable to start, not initialized.");
     return false;
   }
 
   // if (!server_->isActive())
   // {
-  //   ROS_ERROR_NAMED("FollowJointTrajectoryController",
+  //   ROS_ERROR_NAMED("TorqueJointTrajectoryController",
   //                   "Unable to start, action server is not active.");
   //   return false;
   // }
@@ -152,7 +153,7 @@ bool FollowJointTrajectoryController::start()
   return true;
 }
 
-bool FollowJointTrajectoryController::stop(bool force)
+bool TorqueJointTrajectoryController::stop(bool force)
 {
   if (!initialized_)
     return true;
@@ -174,13 +175,13 @@ bool FollowJointTrajectoryController::stop(bool force)
   return true;
 }
 
-bool FollowJointTrajectoryController::reset()
+bool TorqueJointTrajectoryController::reset()
 {
   stop(true);  // force stop ourselves
   return (manager_->requestStop(getName()) == 0);
 }
 
-void FollowJointTrajectoryController::update(const ros::Time& now, const ros::Duration& dt)
+void TorqueJointTrajectoryController::update(const ros::Time& now, const ros::Duration& dt)
 {
   if (!initialized_)
     return;
@@ -238,6 +239,10 @@ void FollowJointTrajectoryController::update(const ros::Time& now, const ros::Du
         feedback_.error.velocities[j] = feedback_.actual.velocities[j] -
                                         feedback_.desired.velocities[j];
       }
+
+      // Nominal torque controller 
+      std::vector<double> control_input = fetch_controller_.update(feedback_.actual.positions, feedback_.actual.velocities,
+                                                    feedback_.desired.positions, feedback_.desired.velocities, feedback_.desired.accelerations);
 
       // Check that we are within path tolerance
       if (has_path_tolerance_)
@@ -303,12 +308,30 @@ void FollowJointTrajectoryController::update(const ros::Time& now, const ros::Du
         }
       }
 
+      ROS_INFO_STREAM("Running nominal controller to test setEffort.");
+      // // joints_[0]->setEffort(2.0);
+      // // joints_[1]->setEffort(-60.0); //accounting for gravity compensation
+      // // joints_[2]->setEffort(0.0);
+      // // joints_[3]->setEffort(-23.0);
+      // // joints_[4]->setEffort(0.0);
+      // // joints_[5]->setEffort(-5.0);
+      // // joints_[6]->setEffort(2.0);
+
+      // joints_[0]->setEffort(2.0);
+      // // joints_[1]->setEffort(0.0);
+      // // joints_[2]->setEffort(0.0);
+      // // joints_[3]->setEffort(0.0);
+      // // joints_[4]->setEffort(0.0);
+      // // joints_[5]->setEffort(0.0);
+      // joints_[6]->setEffort(2.0);
+
       // Update joints
       for (size_t j = 0; j < joints_.size(); ++j)
       {
-        joints_[j]->setPosition(feedback_.desired.positions[j],
-                                feedback_.desired.velocities[j],
-                                0.0);
+        joints_[j]->setEffort(control_input[j]);
+        // joints_[j]->setPosition(feedback_.desired.positions[j],
+        //                         feedback_.desired.velocities[j],
+        //                         0.0);
       }
     }
   }
@@ -341,7 +364,7 @@ void FollowJointTrajectoryController::update(const ros::Time& now, const ros::Du
  * Specification is basically the message:
  * http://ros.org/doc/indigo/api/control_msgs/html/action/FollowJointTrajectory.html
  */
-void FollowJointTrajectoryController::executeCb(const control_msgs::FollowJointTrajectoryGoalConstPtr& goal)
+void TorqueJointTrajectoryController::executeCb(const control_msgs::FollowJointTrajectoryGoalConstPtr& goal)
 {
   control_msgs::FollowJointTrajectoryResult result;
 
@@ -569,7 +592,7 @@ void FollowJointTrajectoryController::executeCb(const control_msgs::FollowJointT
   ROS_DEBUG("Done executing trajectory");
 }
 
-TrajectoryPoint FollowJointTrajectoryController::getPointFromCurrent(
+TrajectoryPoint TorqueJointTrajectoryController::getPointFromCurrent(
   bool incl_vel, bool incl_acc, bool zero_vel)
 {
   TrajectoryPoint point;
@@ -604,12 +627,12 @@ TrajectoryPoint FollowJointTrajectoryController::getPointFromCurrent(
   return point;
 }
 
-std::vector<std::string> FollowJointTrajectoryController::getCommandedNames()
+std::vector<std::string> TorqueJointTrajectoryController::getCommandedNames()
 {
   return joint_names_;
 }
 
-std::vector<std::string> FollowJointTrajectoryController::getClaimedNames()
+std::vector<std::string> TorqueJointTrajectoryController::getClaimedNames()
 {
   return joint_names_;
 }

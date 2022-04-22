@@ -239,6 +239,10 @@ void TorqueJointTrajectoryController::update(const ros::Time& now, const ros::Du
                                         feedback_.desired.velocities[j];
       }
 
+      // Nominal torque controller 
+      std::vector<double> control_input = fetch_controller_.update(feedback_.actual.positions, feedback_.actual.velocities,
+                                                    feedback_.desired.positions, feedback_.desired.velocities, feedback_.desired.accelerations);
+
       // Check that we are within path tolerance
       if (has_path_tolerance_)
       {
@@ -303,33 +307,31 @@ void TorqueJointTrajectoryController::update(const ros::Time& now, const ros::Du
         }
       }
 
-      ROS_INFO_STREAM("Sending hardcoded torque values to test setEffort!");
-      // std::vector<double> hardcoded_torques;
-      // hardcoded_torques.push_back(0.0);
-      // hardcoded_torques.push_back(0.0);
-      // hardcoded_torques.push_back(0.0);
-      // hardcoded_torques.push_back(0.0);
-      // hardcoded_torques.push_back(0.0);
-      // hardcoded_torques.push_back(1.0);
-      // hardcoded_torques.push_back(0.0);
+      ROS_INFO_STREAM("Running nominal controller to test setEffort.");
+      // // joints_[0]->setEffort(2.0);
+      // // joints_[1]->setEffort(-60.0); //accounting for gravity compensation
+      // // joints_[2]->setEffort(0.0);
+      // // joints_[3]->setEffort(-23.0);
+      // // joints_[4]->setEffort(0.0);
+      // // joints_[5]->setEffort(-5.0);
+      // // joints_[6]->setEffort(2.0);
 
-      joints_[0]->setEffort(0.0);
-      joints_[1]->setEffort(0.0);
-      joints_[2]->setEffort(-1.0);
-      joints_[3]->setEffort(0.0);
-      joints_[4]->setEffort(0.0);
-      joints_[5]->setEffort(1.0);
-      joints_[6]->setEffort(0.0);
+      // joints_[0]->setEffort(2.0);
+      // // joints_[1]->setEffort(0.0);
+      // // joints_[2]->setEffort(0.0);
+      // // joints_[3]->setEffort(0.0);
+      // // joints_[4]->setEffort(0.0);
+      // // joints_[5]->setEffort(0.0);
+      // joints_[6]->setEffort(2.0);
 
-      // // Update joints
-      // for (size_t j = 0; j < joints_.size(); ++j)
-      // {
-      //   // joints_[j]->setPosition(feedback_.desired.positions[j],
-      //   //                         feedback_.desired.velocities[j],
-      //   //                         0.0);
-        
-      //   joints_[j]->setEffort(hardcoded_torques[j]);
-      // }
+      // Update joints
+      for (size_t j = 0; j < joints_.size(); ++j)
+      {
+        joints_[j]->setEffort(control_input[j]);
+        // joints_[j]->setPosition(feedback_.desired.positions[j],
+        //                         feedback_.desired.velocities[j],
+        //                         0.0);
+      }
     }
   }
   else if (last_sample_.q.size() == joints_.size())

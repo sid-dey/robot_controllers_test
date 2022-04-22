@@ -54,6 +54,8 @@
 #include <robot_controllers/trajectory.h>
 #include <robot_controllers/trajectory_spline_sampler.h>
 
+#include "../../src/fetch_torque_controller.cpp"
+
 namespace robot_controllers
 {
 
@@ -164,6 +166,9 @@ private:
 
   control_msgs::FollowJointTrajectoryFeedback feedback_;
   ros::Time goal_time;
+
+  FetchArmTorqueController fetch_controller_;
+
 };
 
 }  // namespace robot_controllers
